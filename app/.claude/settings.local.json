@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell *)",
+      "Read(//c/Users/23181/AppData/Local/Android/**)",
+      "Read(//d/Android/**)",
+      "Read(//e/Android/**)",
+      "Read(//c/Users/23181/**)",
+      "Bash(mkdir -p \"C:/Users/23181/Android/Sdk\")",
+      "Bash(curl -L -o cmdline-tools.zip \"https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip\")",
+      "Bash(where choco *)",
+      "Bash(where winget *)",
+      "Bash(where scoop *)",
+      "Bash(winget list *)",
+      "Bash(cp \"D:/googledownload/Android-BLE-master/gradle/wrapper/gradle-wrapper.jar\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradle/wrapper/gradle-wrapper.jar\")",
+      "Bash(cp \"D:/googledownload/Android-BLE-master/gradle/wrapper/gradle-wrapper.properties\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradle/wrapper/gradle-wrapper.properties\")",
+      "Read(//d/googledownload/Android-BLE-master/**)",
+      "Bash(cp \"D:/googledownload/Android-BLE-master/gradlew\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew\")",
+      "Bash(cp \"D:/googledownload/Android-BLE-master/gradlew.bat\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew.bat\")",
+      "Bash(chmod +x \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew\")",
+      "Bash(winget install *)"
+    ]
+  }
+}

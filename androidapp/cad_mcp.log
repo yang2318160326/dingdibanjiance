@@ -1,0 +1,27 @@
+2026-06-04 17:10:56,439 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:10:56,451 - mcp_cad_server - INFO - 提示词模板已加载: C:\Users\23181\AppData\Local\uv\cache\archive-v0\NuqLqrHCKAV8bnLR\Lib\site-packages\cad_cowork_mcp\prompts\cad_system_prompt.md
+2026-06-04 17:10:56,475 - mcp_cad_server - INFO - API 命令清单已加载，共 126 个命令
+2026-06-04 17:10:56,479 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:10:56,481 - mcp_cad_server - INFO - 配置文件加载成功
+2026-06-04 17:10:56,483 - cad_controller - INFO - CAD控制器已初始化
+2026-06-04 17:10:56,483 - mcp_cad_server - INFO - CAD服务已初始化
+2026-06-04 17:10:56,564 - mcp_cad_server - INFO - 服务器正在使用 stdio 传输运行
+2026-06-04 17:11:05,332 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:11:05,333 - mcp_cad_server - INFO - 提示词模板已加载: C:\Users\23181\AppData\Local\uv\cache\archive-v0\NuqLqrHCKAV8bnLR\Lib\site-packages\cad_cowork_mcp\prompts\cad_system_prompt.md
+2026-06-04 17:11:05,339 - mcp_cad_server - INFO - API 命令清单已加载，共 126 个命令
+2026-06-04 17:11:05,340 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:11:05,340 - mcp_cad_server - INFO - 配置文件加载成功
+2026-06-04 17:11:05,340 - cad_controller - INFO - CAD控制器已初始化
+2026-06-04 17:11:05,340 - mcp_cad_server - INFO - CAD服务已初始化
+2026-06-04 17:11:05,418 - mcp_cad_server - INFO - 服务器正在使用 stdio 传输运行
+2026-06-04 17:11:54,618 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:11:54,619 - mcp_cad_server - INFO - 提示词模板已加载: C:\Users\23181\AppData\Local\uv\cache\archive-v0\NuqLqrHCKAV8bnLR\Lib\site-packages\cad_cowork_mcp\prompts\cad_system_prompt.md
+2026-06-04 17:11:54,625 - mcp_cad_server - INFO - API 命令清单已加载，共 126 个命令
+2026-06-04 17:11:54,648 - mcp_cad_server - INFO - 启动 CAD MCP 服务器
+2026-06-04 17:11:54,649 - mcp_cad_server - INFO - 配置文件加载成功
+2026-06-04 17:11:54,649 - cad_controller - INFO - CAD控制器已初始化
+2026-06-04 17:11:54,649 - mcp_cad_server - INFO - CAD服务已初始化
+2026-06-04 17:11:54,724 - mcp_cad_server - INFO - 服务器正在使用 stdio 传输运行
+2026-06-04 17:11:54,744 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-06-04 17:11:54,747 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2026-06-04 17:11:54,748 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest

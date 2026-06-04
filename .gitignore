@@ -1,0 +1,34 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+androidapp/local.properties
+androidapp/.gradle
+androidapp/build
+androidapp/app/build
+androidapp/app/schemas
+androidapp/gradle/wrapper/gradle-wrapper.jar
+
+# Firmware
+Firmware/App/Inc/*.o
+Firmware/App/Src/*.o
+Firmware/BSP/Inc/*.o
+Firmware/BSP/Src/*.o
+Firmware/Core/Inc/*.o
+Firmware/Core/Src/*.o
+*.elf
+*.hex
+*.bin
+*.map
+
+# OS
+Thumbs.db
+Desktop.ini
+*.swp
+*~
