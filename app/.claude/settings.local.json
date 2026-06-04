@@ -18,7 +18,8 @@
       "Bash(cp \"D:/googledownload/Android-BLE-master/gradlew\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew\")",
       "Bash(cp \"D:/googledownload/Android-BLE-master/gradlew.bat\" \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew.bat\")",
       "Bash(chmod +x \"E:/cursorproject/claudecode/dingdibanjiance/androidapp/gradlew\")",
-      "Bash(winget install *)"
+      "Bash(winget install *)",
+      "Bash(git commit -m 'V1.0.0: 初始版本 - BLE数据采集APP完整实现 *)"
     ]
   }
 }

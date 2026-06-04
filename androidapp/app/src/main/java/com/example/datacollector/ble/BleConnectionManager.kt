@@ -327,6 +327,16 @@ class BleConnectionManager @Inject constructor(
         sendFrame(CommandBuilder.dataAck(nextSeq(), chunkIndex, status))
     }
 
+    suspend fun sendSetDeviceId(deviceId: Long, name: String): Boolean {
+        val frame = sendAndWait(CommandBuilder.setDeviceId(nextSeq(), deviceId, name)) ?: return false
+        return frame.payload.isNotEmpty() && frame.payload[0].toInt() == ProtocolConstants.STATUS_OK
+    }
+
+    suspend fun sendReboot(): Boolean {
+        val frame = sendAndWait(CommandBuilder.reboot(nextSeq())) ?: return false
+        return frame.payload.isNotEmpty() && frame.payload[0].toInt() == ProtocolConstants.STATUS_OK
+    }
+
     private suspend fun sendAndWait(data: ByteArray, timeoutMs: Long = ProtocolConstants.TIMEOUT_MS): FrameParser.Frame? {
         pendingCommand = CompletableDeferred()
         sendFrame(data)

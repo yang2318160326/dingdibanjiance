@@ -3,8 +3,9 @@ package com.example.datacollector.ui.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,7 +21,8 @@ import com.example.datacollector.viewmodel.DeviceViewModel
 @Composable
 fun DeviceScreen(
     macAddress: String,
-    onConfigClick: () -> Unit,
+    onDailyConfigClick: () -> Unit,
+    onDebugConfigClick: () -> Unit,
     onDataClick: () -> Unit,
     onDisconnect: () -> Unit,
     viewModel: DeviceViewModel = hiltViewModel()
@@ -52,6 +54,7 @@ fun DeviceScreen(
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)
         ) {
+            // 设备信息
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("设备信息", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -67,6 +70,7 @@ fun DeviceScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // 存储状态
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("存储状态", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -84,6 +88,7 @@ fun DeviceScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // 采集状态
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("采集状态", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -99,6 +104,7 @@ fun DeviceScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // 时间同步
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("时间同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -111,14 +117,30 @@ fun DeviceScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            // 两个设置入口
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(onClick = onConfigClick, modifier = Modifier.weight(1f)) {
-                    Icon(Icons.Default.Settings, contentDescription = null)
+                Button(
+                    onClick = onDailyConfigClick,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Icon(Icons.Default.Home, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("参数配置")
+                    Text("日常设置")
                 }
-                Button(onClick = onDataClick, modifier = Modifier.weight(1f)) { Text("下载数据") }
+                OutlinedButton(
+                    onClick = onDebugConfigClick,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Default.Build, contentDescription = null)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("调试设置")
+                }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = onDataClick, modifier = Modifier.fillMaxWidth()) { Text("下载数据") }
 
             Spacer(modifier = Modifier.height(8.dp))
 
