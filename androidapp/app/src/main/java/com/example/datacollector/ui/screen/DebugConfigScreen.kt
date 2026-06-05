@@ -6,6 +6,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Send
@@ -29,11 +31,26 @@ fun DebugConfigScreen(
 ) {
     val currentConfig by viewModel.currentConfig.collectAsState()
     val deviceStatus by viewModel.deviceStatus.collectAsState()
+    val operationResult by viewModel.operationResult.collectAsState()
 
     // 密码验证
     var isUnlocked by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf(false) }
+    var showResultDialog by remember { mutableStateOf(false) }
+    var resultTitle by remember { mutableStateOf("") }
+    var resultMessage by remember { mutableStateOf("") }
+    var isSuccess by remember { mutableStateOf(true) }
+
+    LaunchedEffect(operationResult) {
+        operationResult?.let { result ->
+            resultTitle = if (result.isSuccess) "操作成功" else "操作失败"
+            resultMessage = result.message
+            isSuccess = result.isSuccess
+            showResultDialog = true
+            viewModel.clearOperationResult()
+        }
+    }
 
     // 通信参数
     var baudrate by remember { mutableStateOf("9600") }
@@ -363,5 +380,25 @@ fun DebugConfigScreen(
                 }
             }
         }
+    }
+
+    // 操作结果弹窗
+    if (showResultDialog) {
+        AlertDialog(
+            onDismissRequest = { showResultDialog = false },
+            icon = {
+                Icon(
+                    if (isSuccess) Icons.Default.CheckCircle else Icons.Default.Error,
+                    contentDescription = null,
+                    tint = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            title = { Text(resultTitle, color = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error) },
+            text = { Text(resultMessage) },
+            confirmButton = {
+                Button(onClick = { showResultDialog = false }) { Text("确定") }
+            }
+        )
     }
 }

@@ -6,7 +6,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
@@ -29,14 +31,30 @@ fun DailyConfigScreen(
 ) {
     val deviceInfo by viewModel.deviceInfo.collectAsState()
     val deviceStatus by viewModel.deviceStatus.collectAsState()
+    val operationResult by viewModel.operationResult.collectAsState()
+
     var deviceId by remember { mutableStateOf("0") }
     var intervalHour by remember { mutableStateOf("00") }
     var intervalMin by remember { mutableStateOf("01") }
     var showEraseDialog by remember { mutableStateOf(false) }
     var eraseConfirmText by remember { mutableStateOf("") }
+    var showResultDialog by remember { mutableStateOf(false) }
+    var resultTitle by remember { mutableStateOf("") }
+    var resultMessage by remember { mutableStateOf("") }
+    var isSuccess by remember { mutableStateOf(true) }
 
     LaunchedEffect(deviceInfo) {
         deviceInfo?.let { deviceId = it.deviceId.toString() }
+    }
+
+    LaunchedEffect(operationResult) {
+        operationResult?.let { result ->
+            resultTitle = if (result.isSuccess) "操作成功" else "操作失败"
+            resultMessage = result.message
+            isSuccess = result.isSuccess
+            showResultDialog = true
+            viewModel.clearOperationResult()
+        }
     }
 
     Scaffold(
@@ -183,6 +201,27 @@ fun DailyConfigScreen(
         }
     }
 
+    // 操作结果弹窗
+    if (showResultDialog) {
+        AlertDialog(
+            onDismissRequest = { showResultDialog = false },
+            icon = {
+                Icon(
+                    if (isSuccess) Icons.Default.CheckCircle else Icons.Default.Error,
+                    contentDescription = null,
+                    tint = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            title = { Text(resultTitle, color = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error) },
+            text = { Text(resultMessage) },
+            confirmButton = {
+                Button(onClick = { showResultDialog = false }) { Text("确定") }
+            }
+        )
+    }
+
+    // 清除数据确认弹窗
     if (showEraseDialog) {
         AlertDialog(
             onDismissRequest = { showEraseDialog = false; eraseConfirmText = "" },
@@ -226,7 +265,11 @@ fun DailyConfigScreen(
             },
             confirmButton = {
                 Button(
-                    onClick = { viewModel.eraseDeviceData(); showEraseDialog = false; eraseConfirmText = "" },
+                    onClick = {
+                        viewModel.eraseDeviceData()
+                        showEraseDialog = false
+                        eraseConfirmText = ""
+                    },
                     enabled = eraseConfirmText == "CONFIRM",
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) { Text("确认清除") }
