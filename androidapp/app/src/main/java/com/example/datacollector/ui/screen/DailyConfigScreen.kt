@@ -186,17 +186,40 @@ fun DailyConfigScreen(
     if (showEraseDialog) {
         AlertDialog(
             onDismissRequest = { showEraseDialog = false; eraseConfirmText = "" },
-            title = { Text("确认清除数据") },
+            title = { Text("⚠️ 确认清除数据", color = MaterialTheme.colorScheme.error) },
             text = {
                 Column {
-                    Text("此操作将永久删除设备上的所有数据记录，不可恢复！")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("请输入 CONFIRM 确认操作:", style = MaterialTheme.typography.bodySmall)
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text("警告：此操作不可恢复！", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("• 将永久删除设备上的所有数据记录", style = MaterialTheme.typography.bodySmall)
+                            Text("• 删除后无法恢复", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text("请确保：", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("• 所有数据已下载到手机", style = MaterialTheme.typography.bodySmall)
+                            Text("• 数据已备份到本地", style = MaterialTheme.typography.bodySmall)
+                            Text("• 确认不再需要这些数据", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("请输入 CONFIRM 确认操作:", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
                         value = eraseConfirmText,
                         onValueChange = { eraseConfirmText = it },
-                        label = { Text("确认文本") },
+                        label = { Text("输入 CONFIRM") },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

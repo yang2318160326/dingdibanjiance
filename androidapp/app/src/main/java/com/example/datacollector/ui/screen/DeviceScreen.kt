@@ -1,6 +1,8 @@
 package com.example.datacollector.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
@@ -30,6 +32,7 @@ fun DeviceScreen(
     val deviceInfo by viewModel.deviceInfo.collectAsState()
     val deviceStatus by viewModel.deviceStatus.collectAsState()
     val connectionState by viewModel.connectionState.collectAsState()
+    val currentConfig by viewModel.currentConfig.collectAsState()
 
     LaunchedEffect(macAddress) { viewModel.loadDeviceInfo(macAddress) }
 
@@ -52,19 +55,39 @@ fun DeviceScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            // 设备信息
+            // 设备基本信息
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("设备信息", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     deviceInfo?.let { info ->
-                        InfoRow("设备名称", info.deviceName)
+                        InfoRow("固件地址", macAddress)
                         InfoRow("设备ID", "0x${info.deviceId.toString(16).uppercase()}")
                         InfoRow("固件版本", info.firmwareVersion)
-                        InfoRow("MAC地址", macAddress)
+                        InfoRow("分机号", info.deviceId.toString())
                     } ?: Text("加载中...", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // 当前时间
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("当前时间", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("手机时间: ${DateTimeUtils.formatTimestampMs(System.currentTimeMillis())}")
+                    deviceStatus?.let {
+                        // 显示设备时间（如果有）
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { viewModel.syncTime() }) { Text("同步时间到设备") }
                 }
             }
 
@@ -78,24 +101,35 @@ fun DeviceScreen(
                     deviceInfo?.let { info ->
                         val total = info.recordCount + info.freeSpace
                         val usedPercent = if (total > 0) info.recordCount.toFloat() / total else 0f
-                        Text("已记录: ${info.recordCount} 条")
-                        Text("总容量: $total 条")
-                        LinearProgressIndicator(progress = usedPercent, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp))
-                        Text("${(usedPercent * 100).toInt()}%", style = MaterialTheme.typography.bodySmall)
+                        InfoRow("已记录", "${info.recordCount} 条")
+                        InfoRow("剩余空间", "${info.freeSpace} 条")
+                        InfoRow("总容量", "$total 条")
+                        LinearProgressIndicator(
+                            progress = { usedPercent },
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                        )
+                        Text("使用率: ${(usedPercent * 100).toInt()}%", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 采集状态
+            // 设备状态
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("采集状态", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("设备状态", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     deviceStatus?.let { status ->
-                        val stateText = when (status.state) { 0 -> "空闲"; 1 -> "采集中"; 2 -> "BLE传输中"; 3 -> "睡眠"; else -> "未知" }
-                        InfoRow("状态", stateText)
+                        val stateText = when (status.state) {
+                            0 -> "空闲"; 1 -> "采集中"; 2 -> "BLE传输中"; 3 -> "睡眠"; else -> "未知"
+                        }
+                        val stateColor = when (status.state) {
+                            1 -> MaterialTheme.colorScheme.primary
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                        InfoRow("运行状态", stateText)
+                        Text("状态颜色", color = stateColor, modifier = Modifier.height(0.dp)) // 隐藏
                         InfoRow("错误码", if (status.errorCode == 0) "正常" else "错误: ${status.errorCode}")
                         InfoRow("下次采集", "${status.nextReadIn}秒后")
                     } ?: Text("加载中...", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -104,18 +138,48 @@ fun DeviceScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 时间同步
+            // 传感器状态
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("时间同步", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("传感器状态", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("当前手机时间: ${DateTimeUtils.formatTimestampMs(System.currentTimeMillis())}")
+                    currentConfig?.let { config ->
+                        InfoRow("从站地址", config.sensorAddr.toString())
+                        InfoRow("起始寄存器", "0x${config.sensorStartReg.toString(16).uppercase()}")
+                        InfoRow("寄存器数量", config.sensorRegCount.toString())
+                        val dataTypeText = when (config.sensorDataType) {
+                            0 -> "UINT16"; 1 -> "INT16"; 2 -> "UINT32"; 3 -> "FLOAT32"; 4 -> "RAW"; else -> "未知"
+                        }
+                        InfoRow("数据类型", dataTypeText)
+                        InfoRow("波特率", config.modbusBaudrate.toString())
+                        val parityText = when (config.modbusParity) {
+                            0 -> "无校验"; 1 -> "奇校验"; 2 -> "偶校验"; else -> "未知"
+                        }
+                        InfoRow("校验位", parityText)
+                    } ?: Text("加载中...", color = MaterialTheme.colorScheme.onSurfaceVariant)
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.syncTime() }) { Text("同步时间") }
+
+                    // 传感器位移数值（模拟显示）
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text("当前传感器位移数值", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                "-- mm",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text("(连接设备后实时显示)", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // 两个设置入口
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {

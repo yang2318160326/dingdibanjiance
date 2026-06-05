@@ -31,6 +31,7 @@ class ScanViewModel @Inject constructor(
 
     fun startScan() { bleManager.startScan() }
     fun stopScan() { bleManager.stopScan() }
+    fun pauseScan() { bleManager.stopScan() }
     fun connect(macAddress: String) { viewModelScope.launch { bleManager.connect(macAddress) } }
     fun disconnect() { bleManager.disconnect() }
 }
